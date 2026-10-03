@@ -43,4 +43,32 @@ export class BloqueMemoria {
     liberar(): void {
         this.setProcesoOcupante(undefined);
     }
+    
+/**
+ * Reserva una parte del bloque para un proceso.
+ * Debe invocarse solo si el bloque está libre y tiene capacidad suficiente.
+ * Devuelve un bloque libre sobrante cuando queda memoria disponible.
+ */
+partirYAsignar(
+    pid: string,
+    capacidadRequerida: number
+): BloqueMemoria[] {
+    // Calcula la memoria libre que queda después de la asignación.
+    const capacidadSobrante = this.capacidad - capacidadRequerida;
+
+    // El bloque sobrante comienza inmediatamente después de la parte asignada.
+    const inicioSobrante = this.inicio + capacidadRequerida;
+
+    // El bloque actual pasa a representar sólo la memoria asignada al proceso.
+    this.setCapacidad(capacidadRequerida);
+    this.ocupar(pid);
+
+    // Si sobra memoria, crea el nuevo bloque libre; si el ajuste es exacto,
+    // devuelve un arreglo vacío y no crea bloques de capacidad cero.
+    return [capacidadSobrante]
+        .filter(capacidad => capacidad > 0)
+        .map(capacidad =>
+            new BloqueMemoria(inicioSobrante, capacidad)
+        );
+}
 }
