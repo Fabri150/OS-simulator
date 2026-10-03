@@ -33,4 +33,31 @@ describe("BloqueMemoria", () => {
         expect(bloque.procesoOcupante).toBeUndefined();
         expect(bloque.estaLibre()).toBe(true);
     });
+
+    it("Divide un bloque y asigna la capacidad solicitada", () => {
+        const bloque = new BloqueMemoria(0, 1024);
+
+        const bloquesSobrantes = bloque.partirYAsignar("P1", 200);
+        const sobrante = bloquesSobrantes.at(0);
+
+        expect(bloque.inicio).toBe(0);
+        expect(bloque.capacidad).toBe(200);
+        expect(bloque.procesoOcupante).toBe("P1");
+        expect(bloque.estaLibre()).toBe(false);
+        expect(bloquesSobrantes).toHaveLength(1);
+        expect(sobrante?.inicio).toBe(200);
+        expect(sobrante?.capacidad).toBe(824);
+        expect(sobrante?.procesoOcupante).toBeUndefined();
+        expect(sobrante?.estaLibre()).toBe(true);
+    });
+
+    it("No crea un bloque sobrante cuando el ajuste es exacto", () => {
+        const bloque = new BloqueMemoria(0, 200);
+
+        const bloquesSobrantes = bloque.partirYAsignar("P1", 200);
+
+        expect(bloque.capacidad).toBe(200);
+        expect(bloque.procesoOcupante).toBe("P1");
+        expect(bloquesSobrantes).toHaveLength(0);
+    });
 });
