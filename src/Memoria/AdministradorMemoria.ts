@@ -8,4 +8,12 @@ export class AdministradorMemoria {
         this._capacidadTotal = capacidadTotal;
         this._bloques.push(new BloqueMemoria(0, capacidadTotal));
     }
+
+    get capacidadTotal(): number {
+        return this._capacidadTotal;
+    }
+
+    get bloques(): readonly BloqueMemoria[] {
+        return [...this._bloques];
+    }
 }
