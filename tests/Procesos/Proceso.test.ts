@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { EstadoProceso } from "../src/EstadoProceso";
-import { Proceso } from "../src/Proceso";
+import { EstadoProceso } from "../../src/Procesos/EstadoProceso";
+import { Proceso } from "../../src/Procesos/Proceso";
 
 describe("Proceso", () => {
     it("Se puede crear un proceso nuevo con datos iniciales correctos", () => {
