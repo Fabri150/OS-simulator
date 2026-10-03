@@ -31,4 +31,16 @@ export class BloqueMemoria {
     estaLibre(): boolean {
         return this._procesoOcupante === undefined;
     }
+
+    puedeAcomodar(capacidadRequerida: number): boolean {
+        return this.estaLibre() && this._capacidad >= capacidadRequerida;
+    }
+
+    ocupar(pid: string): void {
+        this.setProcesoOcupante(pid);
+    }
+
+    liberar(): void {
+        this.setProcesoOcupante(undefined);
+    }
 }
