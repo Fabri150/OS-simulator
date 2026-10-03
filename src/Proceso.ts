@@ -1,17 +1,18 @@
+import { EstadoProceso } from "./EstadoProceso";
+
 export class Proceso {
     private _pid: string;
-    private memoriaRequerida: number;
-    private cpuTotal: number;
-    private cpuRestante: number;
-    private quantumTotal = 0;
-    private quantumConsumido = 0;
-    private bloqueoRestante = 0;
-    private estado: string = "Nuevo";
+    private _memoriaRequerida: number;
+    private _cpuTotal: number;
+    private _cpuRestante: number;
+    private _quantumConsumido = 0;
+    private _bloqueoRestante = 0;
+    private _estado: EstadoProceso = EstadoProceso.nuevo;
 
-    constructor(PID: string, memoriaRequerida: number, cpuTotal: number) {
-        this._pid = PID;
-        this.memoriaRequerida = memoriaRequerida;
-        this.cpuTotal = cpuTotal;
-        this.cpuRestante = cpuTotal;
+    constructor(pid: string, memoriaRequerida: number, cpuTotal: number) {
+        this._pid = pid;
+        this._memoriaRequerida = memoriaRequerida;
+        this._cpuTotal = cpuTotal;
+        this._cpuRestante = cpuTotal;
     }
 }
