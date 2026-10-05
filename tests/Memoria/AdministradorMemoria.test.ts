@@ -44,4 +44,22 @@ describe("AdministradorMemoria", () => {
         expect(administrador.bloques.at(0)?.capacidad).toBe(500);
         expect(administrador.bloques.at(0)?.estaLibre()).toBe(true);
     });
+
+    it("Calcula memoria libre, mayor hueco y fragmentación externa", () => {
+        const administrador = new AdministradorMemoria(1000);
+        const procesoUno = new Proceso("P1", 100, 1);
+        const procesoDos = new Proceso("P2", 100, 1);
+        const procesoTres = new Proceso("P3", 300, 1);
+        const procesoCuatro = new Proceso("P4", 500, 1);
+        administrador.asignarProceso(procesoUno);
+        administrador.asignarProceso(procesoDos);
+        administrador.asignarProceso(procesoTres);
+        administrador.asignarProceso(procesoCuatro);
+        administrador.liberarProceso("P1");
+        administrador.liberarProceso("P3");
+
+        expect(administrador.obtenerMemoriaLibreTotal()).toBe(400);
+        expect(administrador.obtenerMayorHuecoLibre()).toBe(300);
+        expect(administrador.obtenerFragmentacionExterna()).toBe(25);
+    });
 });
