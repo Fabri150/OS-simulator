@@ -1,6 +1,7 @@
 import { BloqueMemoria } from "./BloqueMemoria";
+import { IAdministradorMemoria } from "./IAdministradorMemoria";
 
-export class AdministradorMemoria {
+export class AdministradorMemoria implements IAdministradorMemoria {
     private readonly _capacidadTotal: number;
     private _bloques: BloqueMemoria[] = [];
 
@@ -15,5 +16,13 @@ export class AdministradorMemoria {
 
     get bloques(): readonly BloqueMemoria[] {
         return [...this._bloques];
+    }
+
+    obtenerCapacidadTotal(): number {
+        return this.capacidadTotal;
+    }
+
+    obtenerBloques(): readonly BloqueMemoria[] {
+        return this.bloques;
     }
 }
