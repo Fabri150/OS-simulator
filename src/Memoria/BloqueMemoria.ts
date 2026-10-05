@@ -1,4 +1,6 @@
-export class BloqueMemoria {
+import { IBloqueMemoria } from "./IBloqueMemoria";
+
+export class BloqueMemoria implements IBloqueMemoria {
     private readonly _inicio: number;
     private _capacidad: number;
     private _procesoOcupante: string | undefined;
