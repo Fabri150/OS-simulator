@@ -29,6 +29,27 @@ export class AdministradorMemoria implements IAdministradorMemoria {
         return this.bloques;
     }
 
+    obtenerMemoriaLibreTotal(): number {
+        return this._bloques
+            .filter(bloque => bloque.estaLibre())
+            .reduce((total, bloque) => total + bloque.capacidad, 0);
+    }
+
+    obtenerMayorHuecoLibre(): number {
+        return this._bloques
+            .filter(bloque => bloque.estaLibre())
+            .reduce((mayor, bloque) => Math.max(mayor, bloque.capacidad), 0);
+    }
+
+    obtenerFragmentacionExterna(): number {
+        const memoriaLibreTotal = this.obtenerMemoriaLibreTotal();
+        const mayorHuecoLibre = this.obtenerMayorHuecoLibre();
+
+        return memoriaLibreTotal === 0
+            ? 0
+            : ((memoriaLibreTotal - mayorHuecoLibre) / memoriaLibreTotal) * 100;
+    }
+
     asignarProceso(proceso: Proceso): boolean {
         const bloque = new FirstFit().elegirBloque(
             this._bloques,
