@@ -1,6 +1,7 @@
 import { EstadoProceso } from "./EstadoProceso";
+import { IProceso } from "./IProceso";
 
-export class Proceso {
+export class Proceso implements IProceso {
     private readonly _pid: string;
     private readonly _memoriaRequerida: number;
     private readonly _cpuTotal: number;
@@ -58,5 +59,28 @@ export class Proceso {
 
     protected setEstado(nuevoValor: EstadoProceso): void {
         this._estado = nuevoValor;
+    }
+
+    ejecutarTick(): void {
+        this.setCpuRestante(this.cpuRestante - 1);
+        this.setQuantumConsumido(this.quantumConsumido + 1);
+    }
+
+    cambiarEstado(nuevoEstado: EstadoProceso): void {
+        this.setEstado(nuevoEstado);
+    }
+
+    reiniciarQuantum(): void {
+        this.setQuantumConsumido(0);
+    }
+
+    bloquear(duracion: number): void {
+        this.setBloqueoRestante(duracion);
+        this.cambiarEstado(EstadoProceso.bloqueado);
+        this.reiniciarQuantum();
+    }
+
+    avanzarBloqueo(): void {
+        this.setBloqueoRestante(this.bloqueoRestante - 1);
     }
 }
