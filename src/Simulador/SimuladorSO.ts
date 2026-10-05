@@ -30,6 +30,12 @@ export class SimuladorSO implements ISimuladorSO {
         return proceso;
     }
 
+    /** Programa una única E/S para un proceso registrado. */
+    programarES(pid: string, tickActivador: number, duracion: number): void {
+        this.validarProgramacionES(pid, tickActivador);
+        this._eventosES.push(new EventoES(pid, tickActivador, duracion));
+    }
+
     private validarMemoriaTotal(memoriaTotal: number): void {
         const esValida = Number.isInteger(memoriaTotal) && memoriaTotal > 0;
 
@@ -48,6 +54,17 @@ export class SimuladorSO implements ISimuladorSO {
 
         esValido || (() => {
             throw new Error("Los datos del proceso no son válidos para este sistema");
+        })();
+    }
+
+    private validarProgramacionES(pid: string, tickActivador: number): void {
+        const proceso = this._procesos.find(procesoActual => procesoActual.pid === pid);
+        const yaTieneEvento = this._eventosES.some(evento => evento.pid === pid);
+        const tickValido = tickActivador > 0 && tickActivador <= (proceso?.cpuTotal ?? 0);
+        const esValida = proceso !== undefined && !yaTieneEvento && tickValido;
+
+        esValida || (() => {
+            throw new Error("La programación de E/S no es válida");
         })();
     }
 }
