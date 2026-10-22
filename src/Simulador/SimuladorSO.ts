@@ -15,6 +15,7 @@ export class SimuladorSO implements ISimuladorSO {
     private readonly _eventosES: EventoES[] = [];
     private _procesoEjecutando: Proceso | undefined;
     private _ticksEjecutados = 0;
+    private _ticksCpuOcupada = 0;
     private _cambiosDeContexto = 0;
 
     constructor(memoriaTotal: number, quantum: number) {
@@ -46,6 +47,9 @@ export class SimuladorSO implements ISimuladorSO {
     }
 
     obtenerSnapshot(): SnapshotSimulador {
+        const memoriaTotal = this._administradorMemoria.obtenerCapacidadTotal();
+        const memoriaLibreTotal = this._administradorMemoria.obtenerMemoriaLibreTotal();
+
         return {
             ticksEjecutados: this._ticksEjecutados,
             cambiosDeContexto: this._cambiosDeContexto,
@@ -67,7 +71,11 @@ export class SimuladorSO implements ISimuladorSO {
                     capacidad: bloque.capacidad,
                     procesoOcupante: bloque.procesoOcupante
                 })),
-            memoriaLibreTotal: this._administradorMemoria.obtenerMemoriaLibreTotal(),
+            memoriaLibreTotal,
+            porcentajeOcupacionMemoria: ((memoriaTotal - memoriaLibreTotal) / memoriaTotal) * 100,
+            porcentajeUtilizacionCpu: this._ticksEjecutados === 0
+                ? 0
+                : (this._ticksCpuOcupada / this._ticksEjecutados) * 100,
             mayorHuecoLibre: this._administradorMemoria.obtenerMayorHuecoLibre(),
             fragmentacionExterna: this._administradorMemoria.obtenerFragmentacionExterna()
         };
@@ -138,6 +146,7 @@ export class SimuladorSO implements ISimuladorSO {
         const proceso = this._procesoEjecutando;
 
         proceso?.ejecutarTick();
+        this._ticksCpuOcupada += proceso === undefined ? 0 : 1;
         proceso && this.resolverResultadoDeEjecucion(proceso);
     }
 
@@ -173,6 +182,7 @@ export class SimuladorSO implements ISimuladorSO {
         proceso.bloquear(evento.duracion);
         evento.marcarComoOcurrido();
         this._procesoEjecutando = undefined;
+        this._cambiosDeContexto++;
     }
 
     private rotarProceso(proceso: Proceso): void {

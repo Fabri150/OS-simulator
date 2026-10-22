@@ -19,6 +19,8 @@ export type SnapshotSimulador = {
         readonly procesoOcupante: string | undefined;
     }>;
     readonly memoriaLibreTotal: number;
+    readonly porcentajeOcupacionMemoria: number;
+    readonly porcentajeUtilizacionCpu: number;
     readonly mayorHuecoLibre: number;
     readonly fragmentacionExterna: number;
 };
