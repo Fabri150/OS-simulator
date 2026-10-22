@@ -3,17 +3,17 @@ import { SimuladorSO } from "./src/Simulador/SimuladorSO";
 
 const simulador = new SimuladorSO(800, 2);
 
-simulador.registrarProceso("P1", 200, 3);
-simulador.registrarProceso("P2", 300, 2);
-simulador.registrarProceso("P3", 400, 4);
+simulador.registrarProceso("P1", 200, 2);
+simulador.registrarProceso("P2", 300, 1);
+simulador.registrarProceso("P3", 400, 2);
 simulador.registrarProceso("P4", 200, 3);
 simulador.programarES("P1", 1, 2);
-simulador.programarES("P3", 2, 1);
+simulador.programarES("P3", 1, 1);
 
 const configuracionProcesos = new Map([
-    ["P1", { cpuTotal: 3, tickActivadorES: 1 }],
-    ["P2", { cpuTotal: 2, tickActivadorES: undefined }],
-    ["P3", { cpuTotal: 4, tickActivadorES: 2 }],
+    ["P1", { cpuTotal: 2, tickActivadorES: 1 }],
+    ["P2", { cpuTotal: 1, tickActivadorES: undefined }],
+    ["P3", { cpuTotal: 2, tickActivadorES: 1 }],
     ["P4", { cpuTotal: 3, tickActivadorES: undefined }]
 ]);
 
@@ -45,6 +45,8 @@ const mostrarEstado = (titulo: string): void => {
     console.log(`CPU: ${cpu}`);
     console.log(`Cola de listos: ${cola}`);
     console.log(`Cambios de contexto: ${snapshot.cambiosDeContexto}`);
+    console.log(`Ocupación de memoria: ${snapshot.porcentajeOcupacionMemoria.toFixed(2)}%`);
+    console.log(`Utilización de CPU: ${snapshot.porcentajeUtilizacionCpu.toFixed(2)}%`);
     console.log(
         `Memoria libre: ${snapshot.memoriaLibreTotal} KB | `
         + `Mayor hueco: ${snapshot.mayorHuecoLibre} KB | `
@@ -89,7 +91,7 @@ const mostrarEstado = (titulo: string): void => {
 
 mostrarEstado("Estado inicial");
 
-Array.from({ length: 12 }).forEach((_, indice) => {
+Array.from({ length: 8 }).forEach((_, indice) => {
     simulador.tick();
     mostrarEstado(`Estado luego del tick ${indice + 1}`);
 });
