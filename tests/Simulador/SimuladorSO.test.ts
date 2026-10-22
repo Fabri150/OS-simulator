@@ -79,7 +79,44 @@ describe("SimuladorSO", () => {
         expect(snapshot.ticksEjecutados).toBe(1);
         expect(snapshot.procesoEjecutando).toBe("P1");
         expect(snapshot.memoriaLibreTotal).toBe(200);
+        expect(snapshot.porcentajeOcupacionMemoria).toBe(60);
+        expect(snapshot.porcentajeUtilizacionCpu).toBe(100);
         expect(snapshot.mayorHuecoLibre).toBe(200);
         expect(snapshot.fragmentacionExterna).toBe(0);
+    });
+
+    it("Devuelve porcentajes en cero al inicio y sin procesos", () => {
+        const simulador = new SimuladorSO(500, 2);
+
+        expect(simulador.obtenerSnapshot().porcentajeOcupacionMemoria).toBe(0);
+        expect(simulador.obtenerSnapshot().porcentajeUtilizacionCpu).toBe(0);
+
+        simulador.tick();
+
+        expect(simulador.obtenerSnapshot().porcentajeUtilizacionCpu).toBe(0);
+        expect(simulador.obtenerSnapshot().porcentajeOcupacionMemoria).toBe(0);
+    });
+
+    it("Cuenta CPU ocupada al bloquear y finalizar, y descuenta ticks ociosos", () => {
+        const simulador = new SimuladorSO(500, 2);
+        simulador.registrarProceso("P1", 200, 2);
+        simulador.programarES("P1", 1, 2);
+
+        simulador.tick(); // Consume CPU y luego se bloquea, conservando memoria.
+        expect(simulador.obtenerSnapshot().cambiosDeContexto).toBe(1);
+        expect(simulador.obtenerSnapshot().porcentajeUtilizacionCpu).toBe(100);
+        expect(simulador.obtenerSnapshot().porcentajeOcupacionMemoria).toBe(40);
+
+        simulador.tick(); // Está bloqueado y la CPU permanece ociosa.
+        expect(simulador.obtenerSnapshot().porcentajeUtilizacionCpu).toBe(50);
+        expect(simulador.obtenerSnapshot().porcentajeOcupacionMemoria).toBe(40);
+
+        simulador.tick(); // Retorna de E/S, ejecuta y termina: 2 ticks ocupados de 3.
+        expect(simulador.obtenerSnapshot().cambiosDeContexto).toBe(1);
+        expect(simulador.obtenerSnapshot().porcentajeUtilizacionCpu).toBeCloseTo(200 / 3);
+        expect(simulador.obtenerSnapshot().porcentajeOcupacionMemoria).toBe(0);
+
+        simulador.tick(); // Todos terminaron: 2 ticks ocupados de 4.
+        expect(simulador.obtenerSnapshot().porcentajeUtilizacionCpu).toBe(50);
     });
 });
