@@ -10,7 +10,8 @@ Proyecto académico en TypeScript que simula, de forma discreta y por ticks, la 
 - Partición de bloques al asignar un proceso y coalescencia de bloques libres contiguos al liberar memoria.
 - Planificación de CPU **Round Robin** con quantum configurable y cola FIFO de listos.
 - Evento de entrada/salida programable por proceso, con duración en ticks.
-- Métricas de memoria: memoria libre total, mayor hueco libre y fragmentación externa.
+- Métricas de memoria: porcentaje de ocupación, memoria libre total, mayor hueco libre y fragmentación externa.
+- Porcentaje acumulado de utilización de CPU y cantidad de cambios de contexto por rotación de Round Robin o bloqueo por E/S. Según la convención de la cátedra, finalizar o renovar quantum sin otros procesos listos no suma cambios de contexto.
 - Snapshot de consulta para observar procesos, CPU, cola de listos, bloques y métricas sin exponer las colecciones internas.
 
 ## Estructura
